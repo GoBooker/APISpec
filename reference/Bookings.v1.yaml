@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Bookings
+  version: '1.0'
+  description: ''
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /bookings:
+    put:
+      summary: Create a new booking
+      operationId: put-bookings
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        '403':
+          description: Forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      description: Creates a new booking for this user
+    get:
+      summary: Get all bookings
+      operationId: get-bookings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '403':
+          description: Forbidden
+      description: Gets all bookings for this user
+      parameters:
+        - schema:
+            type: integer
+            default: 25
+          in: query
+          name: limit
+          description: Limit the query result set
+        - schema:
+            type: integer
+            default: 0
+          in: query
+          name: offset
+          description: The offset used for pagination
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: after
+          description: After is a date in which we want records after
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: before
+          description: Before is the date which we want dates before
+  '/bookings/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: Get a booking by ID
+      tags: []
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Forbidden
+      operationId: get-bookings-id
+    delete:
+      summary: Delete a booking by id
+      operationId: delete-bookings-id
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Forbidden
+      description: ''
+components:
+  schemas:
+    Booking:
+      title: Booking
+      type: object
+      properties:
+        pickupTime:
+          type: string
+          format: time
+        pickupDate:
+          type: string
+          format: date
+        pickupAddress:
+          type: string
+        viaAddresses:
+          type: array
+          items:
+            type: string
+        dropoffAddresses:
+          type: string
+        vehicleType:
+          type: string
+          enum:
+            - 4seater
+            - 6seater
+            - 8seater
+            - 4estate
+          default: 4seater
+        contactName:
+          type: string
+        contactNumber:
+          type: string
+        notes:
+          type: string
+      required:
+        - pickupTime
+        - pickupDate
+        - pickupAddress
+        - dropoffAddresses
+        - contactName
+        - contactNumber
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: ''
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}
+security:
+  - undefined: []
