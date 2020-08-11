@@ -60,7 +60,7 @@ export interface Booking {
      * @type {string}
      * @memberof Booking
      */
-    vehicleType?: BookingVehicleTypeEnum;
+    vehicleTypeID: string;
     /**
      * 
      * @type {string}
@@ -80,18 +80,6 @@ export interface Booking {
      */
     notes?: string;
 }
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum BookingVehicleTypeEnum {
-    _4seater = '4seater',
-    _6seater = '6seater',
-    _8seater = '8seater',
-    _4estate = '4estate'
-}
-
 /**
  * 
  * @export
@@ -104,6 +92,37 @@ export interface InlineResponse201 {
      * @memberof InlineResponse201
      */
     id?: string;
+}
+/**
+ * A list of vehicle types
+ * @export
+ * @interface VehicleType
+ */
+export interface VehicleType {
+    /**
+     * 
+     * @type {string}
+     * @memberof VehicleType
+     */
+    label: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof VehicleType
+     */
+    iconURL?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof VehicleType
+     */
+    passengerSize: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof VehicleType
+     */
+    id: string;
 }
 
 /**
@@ -134,6 +153,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication openIDConnect required
 
 
     
@@ -168,6 +189,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication openIDConnect required
 
             if (limit !== undefined) {
                 localVarQueryParameter['limit'] = limit;
@@ -225,6 +248,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            // authentication openIDConnect required
+
 
     
             localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
@@ -232,6 +257,41 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             delete localVarUrlObj.search;
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {Array<VehicleType>} [vehicleType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getVehicleTypes: async (vehicleType?: Array<VehicleType>, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/vehicle/types`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof vehicleType !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(vehicleType !== undefined ? vehicleType : {}) : (vehicleType || "");
 
             return {
                 url: globalImportUrl.format(localVarUrlObj),
@@ -255,6 +315,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication openIDConnect required
 
 
     
@@ -328,6 +390,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             };
         },
         /**
+         * 
+         * @summary Your GET endpoint
+         * @param {Array<VehicleType>} [vehicleType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getVehicleTypes(vehicleType?: Array<VehicleType>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<VehicleType>>> {
+            const localVarAxiosArgs = await DefaultApiAxiosParamCreator(configuration).getVehicleTypes(vehicleType, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
          * Creates a new booking for this user
          * @summary Create a new booking
          * @param {Booking} [booking] 
@@ -382,6 +458,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getBookingsId(id: string, options?: any): AxiosPromise<void> {
             return DefaultApiFp(configuration).getBookingsId(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Your GET endpoint
+         * @param {Array<VehicleType>} [vehicleType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getVehicleTypes(vehicleType?: Array<VehicleType>, options?: any): AxiosPromise<Array<VehicleType>> {
+            return DefaultApiFp(configuration).getVehicleTypes(vehicleType, options).then((request) => request(axios, basePath));
         },
         /**
          * Creates a new booking for this user
@@ -440,6 +526,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getBookingsId(id: string, options?: any) {
         return DefaultApiFp(this.configuration).getBookingsId(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Your GET endpoint
+     * @param {Array<VehicleType>} [vehicleType] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getVehicleTypes(vehicleType?: Array<VehicleType>, options?: any) {
+        return DefaultApiFp(this.configuration).getVehicleTypes(vehicleType, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
